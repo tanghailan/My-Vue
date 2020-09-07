@@ -15,7 +15,14 @@ const routes = [
   },{
     path: '/main',
     name: 'Main',
-    component: () => import(/* webpackChunkName: "about" */ '../views/Main.vue')
+    component: () => import(/* webpackChunkName: "about" */ '../views/Main.vue'),
+    children:[
+      {
+        path: '/users',
+        name: 'Users',
+        component: () => import(/* webpackChunkName: "about" */ '../views/user/Users.vue'),
+      }
+    ]
   }
 ]
 
