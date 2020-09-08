@@ -30,9 +30,9 @@
             </el-form-item>
 
             <el-form-item label-width="70px">
-              <el-radio v-model="formInline.radio" label="1">备选项</el-radio>
-              <el-radio v-model="formInline.radio" label="2">备选项</el-radio>
-              <el-radio v-model="formInline.radio" label="3">备选项</el-radio>
+              <el-radio v-model="formInline.sex" label="1">男</el-radio>
+              <el-radio v-model="formInline.sex" label="2">女</el-radio>
+              <el-radio v-model="formInline.sex" label="3">其他</el-radio>
             </el-form-item>
 
             <el-form-item label="昵称" label-width="70px">
@@ -54,22 +54,58 @@
           </el-form>
 <!--表格内容演示区域-->
           <el-table
-            :data="tableData"
+            :data="userList"
             border
             style="width: 100%;height: 630px">
             <el-table-column
-              prop="date"
-              label="日期"
-              width="180">
+              prop="id"
+              label="#"
+              width="50">
+            </el-table-column>
+            <el-table-column
+              prop="username"
+              label="用户名"
+              width="110">
+            </el-table-column>
+            <el-table-column
+              prop="sex"
+              label="性别"
+              width="110">
+              <template slot-scope="scope">
+                  {{scope.row.sex==0?'男':(scope.row.sex==1?'女':'保密')}}
+              </template>
             </el-table-column>
             <el-table-column
               prop="name"
-              label="姓名"
+              label="所属部门"
               width="180">
             </el-table-column>
             <el-table-column
-              prop="address"
-              label="地址">
+              sortable
+              prop="birth"
+              label="生日"
+              width="180">
+            </el-table-column>
+            <el-table-column
+              prop="email"
+              label="邮箱"
+              width="180">
+            </el-table-column>
+            <el-table-column
+              prop="phoneNumber"
+              label="电话号码"
+              width="150">
+            </el-table-column>
+            <el-table-column
+              prop="status"
+              label="是否禁用"
+              width="100">
+            </el-table-column>
+            <el-table-column
+              label="操作">
+              <el-button type="primary" size="mini" icon="el-icon-edit"></el-button>
+              <el-button type="danger" size="mini" icon="el-icon-delete"></el-button>
+              <el-button type="warning" size="mini" icon="el-icon-s-tools"></el-button>
             </el-table-column>
           </el-table>
           <el-pagination style="padding-top: 15px"
@@ -88,6 +124,8 @@
 </template>
 
 <script>
+  import {findUserList} from '../../api/user'
+
   export default {
     name: 'Users',
     data() {
@@ -96,9 +134,13 @@
           user: '',
           emil: '',
           cities:'',
-          radio:'1',
+          sex:'1',
           nickName:''
         },
+        //用户集合
+        userList:[],
+        //部门集合
+        deptList:[],
         cities: [{
           value: 'Beijing',
           label: '北京'
@@ -119,25 +161,12 @@
           label: '广州'
         }],
         value: '',
-        tableData: [{
-          date: '2016-05-02',
-          name: '王小虎',
-          address: '上海市普陀区金沙江路 1518 弄'
-        }, {
-          date: '2016-05-04',
-          name: '王小虎',
-          address: '上海市普陀区金沙江路 1517 弄'
-        }, {
-          date: '2016-05-01',
-          name: '王小虎',
-          address: '上海市普陀区金沙江路 1519 弄'
-        }, {
-          date: '2016-05-03',
-          name: '王小虎',
-          address: '上海市普陀区金沙江路 1516 弄'
-        }],
         currentPage4: 4
       }
+    },
+    created () {
+      //创建组件的时候调用查询所有用户的方法
+      this.findUser();
     },
     methods: {
       onSubmit() {
@@ -148,6 +177,11 @@
       },
       handleCurrentChange(val) {
         console.log(`当前页: ${val}`);
+      },
+      async findUser(){
+        const {data} = await findUserList()
+        this.userList = data.data.data;
+        // console.log(data.data)
       }
     }
   }
