@@ -29,7 +29,7 @@
       <!--侧边栏-->
       <el-aside :width="isCollapse?'64px':'200px'">
         <!--展开/收起-->
-        <div class="toggle_box" @click="toggleCollapse">||||||</div>
+        <div class="toggle_box" @click="toggleCollapse">|||</div>
         <el-menu
           default-active="2"
           class="el-menu-vertical-demo"
@@ -497,6 +497,12 @@
     methods:{
       toggleCollapse(){
         this.isCollapse = !this.isCollapse;
+      },
+      handleOpen(key, keyPath) {
+        console.log(key, keyPath);
+      },
+      handleClose(key, keyPath) {
+        console.log(key, keyPath);
       }
     }
   }
