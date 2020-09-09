@@ -9,34 +9,34 @@
     <!--      用户列表卡片-->
     <el-card class="box-card">
       <template>
-        <el-form :inline="true" :model="formInline" class="demo-form-inline">
+        <el-form :inline="true" :model="userVo" class="demo-form-inline">
           <el-form-item label="部门" label-width="70px">
-            <el-select clearable v-model="formInline.dept" placeholder="请选择">
+            <el-select clearable v-model="userVo.dept" placeholder="请选择">
               <el-option
                 v-for="item in deptList"
                 :key="item.id"
-                :label="item.roleName"
+                :label="item.name"
                 :value="item.id">
-                <span style="float: left">{{ item.roleName }}</span>
-                <span style="float: right; color: #8492a6; font-size: 13px">{{ item.remark }}</span>
+                <span style="float: left">{{ item.name }}</span>
+                <span style="float: right; color: #8492a6; font-size: 13px" class="el-tag el-tag--success el-tag--mini el-tag--plain">{{ item.deptCount }}</span>
               </el-option>
             </el-select>
           </el-form-item>
           <el-form-item label="用户名" label-width="70px">
-            <el-input clearable v-model="formInline.user" placeholder="请输入用户名"></el-input>
+            <el-input clearable v-model="userVo.user" placeholder="请输入用户名"></el-input>
           </el-form-item>
           <el-form-item label="邮箱" label-width="70px">
-            <el-input clearable v-model="formInline.emil" placeholder="请输入邮箱"></el-input>
+            <el-input clearable v-model="userVo.emil" placeholder="请输入邮箱"></el-input>
           </el-form-item>
 
           <el-form-item label-width="70px">
-            <el-radio v-model="formInline.sex" label="1">男</el-radio>
-            <el-radio v-model="formInline.sex" label="2">女</el-radio>
-            <el-radio v-model="formInline.sex" label="3">其他</el-radio>
+            <el-radio v-model="userVo.sex" label="1">男</el-radio>
+            <el-radio v-model="userVo.sex" label="2">女</el-radio>
+            <el-radio v-model="userVo.sex" label="3">其他</el-radio>
           </el-form-item>
 
           <el-form-item label="昵称" label-width="70px">
-            <el-input clearable v-model="formInline.nickName" placeholder="请输入昵称"></el-input>
+            <el-input clearable v-model="userVo.nickName" placeholder="请输入昵称"></el-input>
           </el-form-item>
 
           <el-form-item label-width="70px">
@@ -134,27 +134,27 @@
 </template>
 
 <script>
-  import {findUserList} from '../../api/user'
-  import {findRoleList} from '../../api/role'
+  import { findUserList } from '../../api/user'
+  import { findDeptAndCount } from '../../api/dept'
 
   export default {
     name: 'Users',
-    data() {
+    data () {
       return {
-        formInline: {
+        userVo: {
           user: '',
           emil: '',
           dept: '',
           sex: '1',
           nickName: ''
         },
-        size:6,
+        size: 6,
         //当前页码
         current: 1,
         //每页显示的条数
         // pageSize:4,
         //总条数
-        total:100,
+        total: 100,
         //用户集合
         userList: [],
         //部门集合
@@ -181,38 +181,41 @@
         value: '',
       }
     },
-    created() {
+    created () {
       //创建组件的时候调用查询所有用户的方法
-      this.findUser();
-      this.findRoleList();
+      this.findUser()
+      this.findDeptAndCount()
     },
     methods: {
-      onSubmit() {
-        console.log('submit!');
+      onSubmit () {
+        console.log('submit!')
       },
       //当每页条数改变的时候
-      handleSizeChange(val) {
+      handleSizeChange (val) {
         //将val赋值给size
-        this.size = val;
+        this.size = val
         //重新去后台查询数据
-        this.findUser();
-        console.log(`每页 ${val} 条`);
+        this.findUser()
+        console.log(`每页 ${val} 条`)
       },
-      handleCurrentChange(val) {
-        this.current = val;
-        this.findUser();
-        console.log(`当前页: ${val}`);
+      //下一页
+      handleCurrentChange (val) {
+        this.current = val
+        this.findUser()
+        console.log(`当前页: ${val}`)
       },
-      async findUser() {
-        const {data} = await findUserList(this.current,this.size)
-        this.userList = data.data.data;
-        this.total = data.data.total;
+      //查询用户列表
+      async findUser () {
+        const { data } = await findUserList(this.current, this.size,this.userVo)
+        this.userList = data.data.data
+        this.total = data.data.total
         // console.log(data.data)
       },
-      async findRoleList(){
-        const {data} = await findRoleList();
-        this.deptList = data.data.data;
-        // console.log(this.deptList)
+      //查询角色列表
+      async findDeptAndCount () {
+        const { data } = await findDeptAndCount()
+        this.deptList = data.data.departments
+        console.log(this.deptList)
       }
     }
   }
