@@ -11,14 +11,14 @@
       <template>
         <el-form :inline="true" :model="formInline" class="demo-form-inline">
           <el-form-item label="部门" label-width="70px">
-            <el-select clearable v-model="formInline.cities" placeholder="请选择">
+            <el-select clearable v-model="formInline.dept" placeholder="请选择">
               <el-option
-                v-for="item in cities"
-                :key="item.value"
-                :label="item.label"
-                :value="item.value">
-                <span style="float: left">{{ item.label }}</span>
-                <span style="float: right; color: #8492a6; font-size: 13px">{{ item.value }}</span>
+                v-for="item in deptList"
+                :key="item.id"
+                :label="item.roleName"
+                :value="item.id">
+                <span style="float: left">{{ item.roleName }}</span>
+                <span style="float: right; color: #8492a6; font-size: 13px">{{ item.remark }}</span>
               </el-option>
             </el-select>
           </el-form-item>
@@ -135,6 +135,7 @@
 
 <script>
   import {findUserList} from '../../api/user'
+  import {findRoleList} from '../../api/role'
 
   export default {
     name: 'Users',
@@ -143,7 +144,7 @@
         formInline: {
           user: '',
           emil: '',
-          cities: '',
+          dept: '',
           sex: '1',
           nickName: ''
         },
@@ -183,6 +184,7 @@
     created() {
       //创建组件的时候调用查询所有用户的方法
       this.findUser();
+      this.findRoleList();
     },
     methods: {
       onSubmit() {
@@ -206,6 +208,11 @@
         this.userList = data.data.data;
         this.total = data.data.total;
         // console.log(data.data)
+      },
+      async findRoleList(){
+        const {data} = await findRoleList();
+        this.deptList = data.data.data;
+        // console.log(this.deptList)
       }
     }
   }
