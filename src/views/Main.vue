@@ -56,7 +56,7 @@
 </template>
 
 <script>
-  import MenuTree from '../compoents/MenuTree'
+  import MenuTree from '../components/MenuTree'
   export default {
     name: "Main",
     data(){

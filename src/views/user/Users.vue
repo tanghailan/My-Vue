@@ -8,10 +8,10 @@
     </el-breadcrumb>
     <!--      用户列表卡片-->
     <el-card class="box-card">
-      <template>
+<!--      <template>-->
         <el-form :inline="true" :model="userVo" class="demo-form-inline">
           <el-form-item label="部门" label-width="70px">
-            <el-select clearable v-model="userVo.dept" placeholder="请选择">
+            <el-select clearable v-model="userVo.departmentId" placeholder="请选择">
               <el-option
                 v-for="item in deptList"
                 :key="item.id"
@@ -23,16 +23,16 @@
             </el-select>
           </el-form-item>
           <el-form-item label="用户名" label-width="70px">
-            <el-input clearable v-model="userVo.user" placeholder="请输入用户名"></el-input>
+            <el-input clearable v-model="userVo.username" placeholder="请输入用户名"></el-input>
           </el-form-item>
           <el-form-item label="邮箱" label-width="70px">
-            <el-input clearable v-model="userVo.emil" placeholder="请输入邮箱"></el-input>
+            <el-input clearable v-model="userVo.email" placeholder="请输入邮箱"></el-input>
           </el-form-item>
 
           <el-form-item label-width="70px">
-            <el-radio v-model="userVo.sex" label="1">男</el-radio>
-            <el-radio v-model="userVo.sex" label="2">女</el-radio>
-            <el-radio v-model="userVo.sex" label="3">其他</el-radio>
+            <el-radio v-model="userVo.sex" label="0">男</el-radio>
+            <el-radio v-model="userVo.sex" label="1">女</el-radio>
+            <el-radio v-model="userVo.sex" label="">全部</el-radio>
           </el-form-item>
 
           <el-form-item label="昵称" label-width="70px">
@@ -41,9 +41,9 @@
 
           <el-form-item label-width="70px">
             <el-row>
-              <el-button icon="el-icon-refresh">重置</el-button>
-              <el-button type="primary" icon="el-icon-search">查询</el-button>
-              <el-button type="success" icon="el-icon-plus">添加</el-button>
+              <el-button icon="el-icon-refresh" @click="resetUserVo">重置</el-button>
+              <el-button type="primary" icon="el-icon-search" @click="findUser">查询</el-button>
+              <el-button type="success" icon="el-icon-plus" @click="show">添加</el-button>
               <el-button type="warning" icon="el-icon-download">导出</el-button>
             </el-row>
           </el-form-item>
@@ -127,8 +127,8 @@
                        layout="total, sizes, prev, pager, next, jumper"
                        :total="total">
         </el-pagination>
-      </template>
-
+<!--      </template>-->
+        <UserAdd :addOrUpdateVisible="addOrUpdateVisible" @changeShow="showAddOrUpdate" ref="addOrUpdateRef"></UserAdd>
     </el-card>
   </div>
 </template>
@@ -136,16 +136,18 @@
 <script>
   import { findUserList } from '../../api/user'
   import { findDeptAndCount } from '../../api/dept'
+  import UserAdd from "./UserAdd"
+
 
   export default {
     name: 'Users',
     data () {
       return {
         userVo: {
-          user: '',
-          emil: '',
-          dept: '',
-          sex: '1',
+          username : '',
+          email: '',
+          departmentId: '',
+          sex: '',
           nickName: ''
         },
         size: 6,
@@ -159,34 +161,32 @@
         userList: [],
         //部门集合
         deptList: [],
-        cities: [{
-          value: 'Beijing',
-          label: '北京'
-        }, {
-          value: 'Shanghai',
-          label: '上海'
-        }, {
-          value: 'Nanjing',
-          label: '南京'
-        }, {
-          value: 'Chengdu',
-          label: '成都'
-        }, {
-          value: 'Shenzhen',
-          label: '深圳'
-        }, {
-          value: 'Guangzhou',
-          label: '广州'
-        }],
         value: '',
+        // 控制新增编辑弹窗的显示与隐藏
+        addOrUpdateVisible: false
       }
+    },
+    components:{
+      UserAdd,
     },
     created () {
       //创建组件的时候调用查询所有用户的方法
-      this.findUser()
-      this.findDeptAndCount()
+      this.findUser();
+      this.findDeptAndCount();
     },
     methods: {
+      // 按钮点击事件 显示新增编辑弹窗组件
+      show(){
+        this.addOrUpdateVisible = true
+      },
+      // 监听 子组件弹窗关闭后触发，有子组件调用
+      showAddOrUpdate(data){
+        if(data === 'false'){
+          this.addOrUpdateVisible = false
+        }else{
+          this.addOrUpdateVisible = true
+        }
+      },
       onSubmit () {
         console.log('submit!')
       },
@@ -215,7 +215,16 @@
       async findDeptAndCount () {
         const { data } = await findDeptAndCount()
         this.deptList = data.data.departments
-        console.log(this.deptList)
+        // console.log(this.deptList)
+      },
+      //重置表单
+      resetUserVo(){
+        this.userVo.username = '';
+        this.userVo.email = '';
+        this.userVo.departmentId = '';
+        this.userVo.sex = '';
+        this.userVo.nickName = '';
+        this.findUser();
       }
     }
   }
