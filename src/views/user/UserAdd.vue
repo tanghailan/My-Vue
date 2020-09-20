@@ -25,7 +25,7 @@
                 :width="300"
                 :height="300"
                 :key="imagecropperKey"
-                :url="'/ossservice/upload/uploadImgFile'"
+                :url="'/minio/upload'"
                 field="file"
                 @close="closeImage"
                 @crop-upload-success="cropSuccess"/>
@@ -86,7 +86,7 @@
   import ImageCropper from '../../components/ImageCropper'
   import PanThumb from '../../components/PanThumb'
   import {findDeptAndCount} from "../../api/dept";
-
+  import { addUser } from '../../api/user'
   export default {
     name: 'UserAdd',
     components: {ImageCropper, PanThumb},
@@ -100,7 +100,7 @@
     data() {
       return {
         formData: {
-          field101: null,
+          field101: null, //avatar
           username: undefined,
           departmentId: undefined,
           nickname: undefined,
@@ -180,6 +180,9 @@
     },
     mounted() {},
     methods: {
+      addUser(){
+        addUser(this.formData);
+      },
       //查询角色列表
       async findDeptAndCount () {
         const { data } = await findDeptAndCount()
@@ -199,8 +202,10 @@
       handelConfirm() {
         this.$refs['elForm'].validate(valid => {
           if (!valid) return
-          this.close()
-        })
+          // this.close()
+          // console.log(this.formData);
+          this.addUser();
+        });
       },
       field101BeforeUpload(file) {
         let isRightSize = file.size / 1024 / 1024 < 2
@@ -217,7 +222,7 @@
       cropSuccess(data) {
         console.log(data)
         this.imagecropperShow = false
-        this.image = data.url;
+        this.image = data.data.url;
         // 上传成功后，重新打开上传组件时初始化组件，否则显示上一次的上传结果
         this.imagecropperKey = this.imagecropperKey + 1
       },

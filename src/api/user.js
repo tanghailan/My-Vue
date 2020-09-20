@@ -15,3 +15,11 @@ return request({
   data:userVo
 });
 };
+
+export const addUser = (user) => {
+  return request({
+    url:"/system/user/addUser",
+    method:"post",
+    data:user
+  });
+};
