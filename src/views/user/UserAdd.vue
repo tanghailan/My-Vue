@@ -8,7 +8,7 @@
             <!-- 用户头像 -->
             <el-form-item label="用户头像">
 
-              <!-- 头衔缩略图 -->
+              <!-- 头像缩略图 -->
               <pan-thumb :image="image"/>
               <!-- 文件上传按钮 -->
               <el-button type="primary" icon="el-icon-upload" @click="imagecropperShow=true">更换头像
