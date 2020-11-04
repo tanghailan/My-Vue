@@ -100,7 +100,7 @@
     data() {
       return {
         formData: {
-          field101: null, //avatar
+          avatar: null, //avatar
           username: undefined,
           departmentId: undefined,
           nickname: undefined,
@@ -180,8 +180,22 @@
     },
     mounted() {},
     methods: {
-      addUser(){
-        addUser(this.formData);
+      //添加用户
+      async addUser(){
+        const{data:res} = await addUser(this.formData);
+        if (res.code == 200) {
+          this.$notify.success({
+            title:"操作成功",
+            message:"用户添加成功"
+          })
+          //关闭
+          this.$emit('changeShow','false');
+          this.formData = {};
+          this.$emit('findUser');
+          this.$emit('findDeptAndCount');
+        }else{
+            return this.$message.error("用户添加失败:"+res.message);
+        }
       },
       //查询角色列表
       async findDeptAndCount () {
@@ -222,7 +236,7 @@
       cropSuccess(data) {
         console.log(data)
         this.imagecropperShow = false
-        this.image = data.data.url;
+        this.formData.avatar=this.image = data.data.url;
         // 上传成功后，重新打开上传组件时初始化组件，否则显示上一次的上传结果
         this.imagecropperKey = this.imagecropperKey + 1
       },

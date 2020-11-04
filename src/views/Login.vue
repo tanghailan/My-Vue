@@ -41,7 +41,7 @@
 
         <el-form-item class="login_btn">
           <el-button type="primary" @click="submitForm('loginForm')"
-          >立即创建
+          >登录
           </el-button
           >
           <el-button @click="resetForm('loginForm')">重置</el-button>
