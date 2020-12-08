@@ -36,7 +36,7 @@
           </el-form-item>
 
           <el-form-item label="昵称" label-width="70px">
-            <el-input clearable v-model="userVo.nickName" placeholder="请输入昵称"></el-input>
+            <el-input clearable v-model="userVo.nickname" placeholder="请输入昵称"></el-input>
           </el-form-item>
 
           <el-form-item label-width="70px">
@@ -60,12 +60,17 @@
           style="width: 100%;">
           <el-table-column
             prop="id"
-            label="#"
+            label="id"
             width="50">
           </el-table-column>
           <el-table-column
             prop="username"
             label="用户名"
+            width="110">
+          </el-table-column>
+          <el-table-column
+            prop="nickname"
+            label="昵称"
             width="110">
           </el-table-column>
           <el-table-column
@@ -148,7 +153,7 @@
           email: '',
           departmentId: '',
           sex: '',
-          nickName: ''
+          nickname: ''
         },
         size: 6,
         //当前页码
@@ -181,11 +186,7 @@
       },
       // 监听 子组件弹窗关闭后触发，有子组件调用
       showAddOrUpdate(data){
-        if(data === 'false'){
-          this.addOrUpdateVisible = false
-        }else{
-          this.addOrUpdateVisible = true
-        }
+        this.addOrUpdateVisible = data !== 'false';
       },
       onSubmit () {
         console.log('submit!')
@@ -223,7 +224,7 @@
         this.userVo.email = '';
         this.userVo.departmentId = '';
         this.userVo.sex = '';
-        this.userVo.nickName = '';
+        this.userVo.nickname = '';
         this.findUser();
       }
     }
